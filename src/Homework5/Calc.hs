@@ -1,7 +1,11 @@
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Homework5.Calc where
 
 import Homework5.ExprT
 import Homework5.Parser
+import qualified Homework5.StackVM as StackVM
 
 class Expr a where
   lit :: Integer -> a
@@ -10,8 +14,8 @@ class Expr a where
 
 instance Expr ExprT where
   lit = Lit
-  mul = Mul
-  add = Add
+  mul = Homework5.ExprT.Mul
+  add = Homework5.ExprT.Add
 
 instance Expr Integer where
   lit a = a
@@ -23,6 +27,14 @@ instance Expr Bool where
         | otherwise = False
   mul = (&&)
   add = (||)
+
+instance Expr StackVM.Program where
+  lit n = [StackVM.PushI n]
+  mul n m = n ++ m ++ [StackVM.Mul]
+  add n m = n ++ m ++ [StackVM.Add]
+
+compile :: String -> Maybe StackVM.Program
+compile = parseExp lit add mul
 
 newtype MinMax  = MinMax Integer deriving (Eq, Show)
 instance Expr MinMax where

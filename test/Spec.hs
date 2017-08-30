@@ -1,20 +1,22 @@
 import Test.HUnit
 import Homework4
 import Homework5.Calc
+import qualified Homework5.StackVM as StackVM
 import Homework5.ExprT
 import Homework5.Parser (parseExp)
+import Data.Maybe (fromJust)
 
 main :: IO ()
 main = do
   runTestTT $ TestList [ ch4ex1Test
     , ch4ex2Test
     , ch4ex3Test
-    , ch5ex1Test
+    , ch5Test
     ]
   return ()
 
-ch5ex1Test :: Test
-ch5ex1Test = TestLabel "homework 5 exercise 1 tests" $ TestList
+ch5Test :: Test
+ch5Test = TestLabel "homework 5 tests" $ TestList
       [ TestCase $
         assertEqual "eval example"
         20 $ eval (Mul (Add (Lit 2) (Lit 3)) (Lit 4))
@@ -36,6 +38,10 @@ ch5ex1Test = TestLabel "homework 5 exercise 1 tests" $ TestList
         assertEqual "" (Just $ MinMax 5) $ (testExp :: Maybe MinMax)
       , TestCase $
         assertEqual "" (Just $ Mod7 0) $ (testExp :: Maybe Mod7)
+      , TestCase $ assertEqual "simple stackVM"
+        (Just $ [StackVM.PushI 2, StackVM.PushI 1, StackVM.Add]) $ (parseExp lit add mul "2 + 1")
+      , TestCase $
+        assertEqual "stack VM" ((Right $ StackVM.IVal 2 )) $ (StackVM.stackVM $ fromJust $ compile "1 + 1")
       ]
 
 testExp :: Expr a => Maybe a
