@@ -5,16 +5,40 @@ import qualified Homework5.StackVM as StackVM
 import Homework5.ExprT
 import Homework5.Parser (parseExp)
 import Data.Maybe (fromJust)
+import Homework6
 
 main :: IO ()
 main = do
-  runTestTT $ TestList [ ch4ex1Test
+  count <- runTestTT $ TestList [ ch4ex1Test
     , ch4ex2Test
     , ch4ex3Test
     , ch5Test
+    , ch6Test
     ]
+  print count
   return ()
 
+ch6Test :: Test
+ch6Test = TestLabel "stream tests" $ TestList
+        [ TestCase $
+          assertEqual "streamRepeat example"
+          [1,1] $ take 2 $ streamToList $ streamRepeat 1
+        , TestCase $
+          assertEqual "streamMap example"
+          [2,2] $ take 2 $ streamToList $ streamMap (+1) $ streamRepeat 1
+        , TestCase $
+          assertEqual "streamFromSeed example"
+          [1,2,3,4,5] $ take 5 $ streamToList $ streamFromSeed (+1) 1
+        , TestCase $
+          assertEqual "nats stream"
+          [0,1,2,3,4] $ take 5 $ streamToList $ nats
+        , TestCase $
+          assertEqual "ruler example"
+          6 $ (!!63) $ streamToList $ ruler
+        , TestCase $
+          assertEqual "ruler sequence"
+          [0,1,0,2,0,1,0,3,0,1,0,2,0,1,0,4] $ take 16 $ streamToList $ ruler
+        ]
 ch5Test :: Test
 ch5Test = TestLabel "homework 5 tests" $ TestList
       [ TestCase $
