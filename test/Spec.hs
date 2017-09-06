@@ -21,6 +21,9 @@ main = do
 ch6Test :: Test
 ch6Test = TestLabel "stream tests" $ TestList
         [ TestCase $
+          assertEqual "fib2"
+          [0,1,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181] $ take 20 $ fibs2
+        , TestCase $
           assertEqual "streamRepeat example"
           [1,1] $ take 2 $ streamToList $ streamRepeat 1
         , TestCase $
@@ -38,6 +41,9 @@ ch6Test = TestLabel "stream tests" $ TestList
         , TestCase $
           assertEqual "ruler sequence"
           [0,1,0,2,0,1,0,3,0,1,0,2,0,1,0,4] $ take 16 $ streamToList $ ruler
+        , TestCase $
+          assertEqual "fibonacci stream"
+          [0,1,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181] $ take 20 $ streamToList fibs3
         ]
 ch5Test :: Test
 ch5Test = TestLabel "homework 5 tests" $ TestList
