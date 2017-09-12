@@ -50,8 +50,13 @@ tests = TestLabel "tests" $ TestList
         , TestCase $
           assertEqual "takeJ 0"
           (Empty) $ (takeJ 0 yeah)
+        , TestCase $
+          assertEqual "scrabble score fee"
+          (6::Score) $ (scoreString "fee")
+        , TestCase $
+          assertEqual "scrabble scoreLine yay haskell!"
+          (Score 23) $ tag (scoreLine "yay " +++ scoreLine "haskell!")
         ]
-
 yeah :: JoinList Size Char
 yeah =
   ((Single (1) 'y') +++ (Single (1) 'e')) +++

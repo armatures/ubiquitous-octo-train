@@ -1,6 +1,7 @@
 module JoinList where
 import Data.Monoid ((<>))
 import Sized
+import Scrabble
 
 data JoinList m a = Empty
                   | Single m a
@@ -46,6 +47,18 @@ takeJ count (Append s l r) | (sensibleSize l) >= count = takeJ count l
                        | otherwise = Append newSize l newRight
   where newRight = takeJ (count - sensibleSize l) r
         newSize = tag l <> tag newRight
+
+scoreLine :: String -> JoinList Score String
+scoreLine s = foldr scoreLine' Empty (words s)
+
+scoreLine' :: String -> JoinList Score String -> JoinList Score String
+scoreLine' word jl = case jl of
+  Empty ->
+    newNode
+  _ ->
+    jl +++ newNode
+  where newNode = Single (scoreString word) word
+
 
 containsIndex :: (Sized b, Monoid b) => JoinList b a -> Int -> Bool
 containsIndex jl i = i<(sensibleSize jl)
