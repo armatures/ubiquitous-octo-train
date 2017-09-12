@@ -41,14 +41,21 @@ tests = TestLabel "tests" $ TestList
         , TestCase $
           assertEqual "dropJ more than the size"
           Empty $ (dropJ 5 yeah)
+        , TestCase $
+          assertEqual "takeJ first element"
+          (Single (1) 'y') $ (takeJ 1 yeah)
+        , TestCase $
+          assertEqual "takeJ first two elements"
+          ((Single (1) 'y') +++ (Single (1) 'e')) $ (takeJ 2 yeah)
+        , TestCase $
+          assertEqual "takeJ 0"
+          (Empty) $ (takeJ 0 yeah)
         ]
 
 yeah :: JoinList Size Char
 yeah =
-  (Single (1) 'y') +++
-  (Single (1) 'e') +++
-  (Single (1) 'a') +++
-  (Single (1) 'h')
+  ((Single (1) 'y') +++ (Single (1) 'e')) +++
+  ((Single (1) 'a') +++ (Single (1) 'h'))
 
 -- (indexJ i jl) == (jlToList jl !!? i)
 

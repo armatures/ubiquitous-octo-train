@@ -35,6 +35,18 @@ dropJ i (Append s l r) | not $ containsIndex l i = dropJ (i-sensibleSize l) r
 dropJ _ (Single _ _) = Empty
 
 
+takeJ :: (Sized b, Monoid b) =>
+            Int -> JoinList b a -> JoinList b a
+takeJ _ Empty = Empty
+takeJ 0 _ = Empty
+takeJ count (Single _ _) | count < 0 = error "index is less than zero in takeJ"
+takeJ _ x@(Single _ _) = x
+-- takeJ i (Append s _ _) | i > (tag s) = error "index is outside the bounds of the joinList"
+takeJ count (Append s l r) | (sensibleSize l) >= count = takeJ count l
+                       | otherwise = Append newSize l newRight
+  where newRight = takeJ (count - sensibleSize l) r
+        newSize = tag l <> tag newRight
+
 containsIndex :: (Sized b, Monoid b) => JoinList b a -> Int -> Bool
 containsIndex jl i = i<(sensibleSize jl)
 
