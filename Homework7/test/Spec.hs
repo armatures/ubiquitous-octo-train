@@ -32,6 +32,15 @@ tests = TestLabel "tests" $ TestList
         , TestCase $
           assertEqual "indexJ (-1)"
           Nothing $ (indexJ (-1) yeah)
+        , TestCase $
+          assertEqual "dropJ a whole list"
+          Empty $ (dropJ 4 yeah)
+        , TestCase $
+          assertEqual "dropJ all but the last element"
+          (Single (1) 'h') $ (dropJ 3 yeah)
+        , TestCase $
+          assertEqual "dropJ more than the size"
+          Empty $ (dropJ 5 yeah)
         ]
 
 yeah :: JoinList Size Char

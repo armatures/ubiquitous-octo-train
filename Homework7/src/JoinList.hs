@@ -24,6 +24,16 @@ indexJ i (Append _ l r) | not $ containsIndex l i = indexJ (i-(sensibleSize l)) 
                         | otherwise = indexJ i l
 indexJ _ (Single _ _) = error "reached leaf without decrementing index to 0"
 
+dropJ :: (Sized b, Monoid b) =>
+            Int -> JoinList b a -> JoinList b a
+dropJ _ Empty = Empty
+dropJ 0 jl = jl
+dropJ i (Append s l r) | not $ containsIndex l i = dropJ (i-sensibleSize l) r
+                       | otherwise = Append newSize (newLeft) r
+  where newLeft = dropJ i l
+        newSize = tag newLeft <> tag r
+dropJ _ (Single _ _) = Empty
+
 
 containsIndex :: (Sized b, Monoid b) => JoinList b a -> Int -> Bool
 containsIndex jl i = i<(sensibleSize jl)
